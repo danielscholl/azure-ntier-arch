@@ -1,0 +1,107 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "minLength": 2,
+      "maxLength": 7
+    },
+    "servicePrincipalAppId": {
+      "type": "string",
+      "metadata": {
+        "description": "Service Principal App ID (also called Client ID) that has contributor rights to the subscription used for this deployment. It is used by Spinnaker to dynamically manage resources."
+      }
+    },
+    "adminUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "Servers admin user account name."
+      },
+      "minLength": 1
+    },
+    "adminPassword": {
+      "type": "string",
+      "metadata": {
+        "description": "Servers admin user account password."
+      },
+      "minLength": 10
+    }
+  },
+  "variables": {
+    "cleanUnique": "[toLower(replace(parameters('prefix'),'-', ''))]",
+    "KeyVaultName": "[concat(variables('cleanUnique'), '-kv-' , uniqueString(resourceGroup().id))]",
+    "KeyVaultId": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
+  },
+  "resources": [
+    {
+      "comments": "## Key Vault ##",
+      "type": "Microsoft.KeyVault/vaults",
+      "name": "[variables('KeyVaultName')]",
+      "apiVersion": "2015-06-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "Company": "[parameters('prefix')]"
+      },
+      "properties": {
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "tenantId": "[subscription().tenantId]",
+        "accessPolicies": [
+          {
+            "tenantId": "[subscription().tenantId]",
+            "objectId": "[parameters('servicePrincipalAppId')]",
+            "permissions": {
+              "keys": [
+                "all"
+              ],
+              "secrets": [
+                "all"
+              ]
+            }
+          }
+        ],
+        "enabledForDeployment": true,
+        "enabledForTemplateDeployment": true,
+        "enabledForVolumeEncryption": true
+      },
+      "resources": [
+        {
+          "type": "secrets",
+          "name": "adminUserName",
+          "apiVersion": "2015-06-01",
+          "properties": {
+            "value": "[parameters('adminUserName')]"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+          ]
+        },
+        {
+          "type": "secrets",
+          "name": "adminPassword",
+          "apiVersion": "2015-06-01",
+          "properties": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+          ]
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "keyVault": {
+      "type": "object",
+      "value": {
+        "id": "[variables('KeyVaultId')]"
+      }
+    }
+  }
+}
