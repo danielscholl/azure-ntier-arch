@@ -16,6 +16,8 @@ Param(
   [string] $ResourceGroupName = $env:AZURE_GROUP,
   [string] $Location = $env:AZURE_LOCATION,
   [string] $Subnet = "web-tier",
+  [string] $VMSize = "Standard_DS3_v2",
+  [string] $VMName = "web",
   [string] $Image = $false,
   [string] $ImageGroup = $env:AZURE_DEVOPS,
   [string] $ImageName = $env:AZURE_SERVER_IMAGE
@@ -29,7 +31,8 @@ if ( !$Location) { throw "Location Required" }
 
 if (( $ImageGroup ) -and ( $ImageName ) -and ( $Image -eq $true )) {
   $UseImage = "Yes"
-} else {
+}
+else {
   $UseImage = "No"
 }
 
@@ -70,7 +73,8 @@ Write-Color -Text "$ResourceGroupName  $VirtualNetworkName $Subnet" -Color White
 if ($UseImage -eq "Yes" ) {
   Write-Color -Text "Retrieving Image Parameters..." -Color Green
   $ManagedImage = Get-AzureRmImage -ResourceGroupName $ImageGroup -ImageName $ImageName
-} else {
+}
+else {
   $ManagedImage = @{}
   $ManagedImage.Id = "/NoImage"
 }
@@ -90,6 +94,7 @@ ForEach ($vmName in $Servers) {
     -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
     -prefix $ResourceGroupName `
     -managedImageId $ManagedImage.Id -useImage $UseImage `
+    -vmName $VMName -vmSize $VMSize `
     -diagnosticsStorageName $StorageAccountName -diagnosticsStorageKey $SecureStorageKey `
     -adminUserName $AdminUserName -adminPassword $AdminPassword `
     -vnetGroup $ResourceGroupName -vnet $VirtualNetworkName -subnet $Subnet `
