@@ -9,7 +9,7 @@
       "value": "web"
     },
     "vmSize": {
-      "value": "Standard_DS3_v2"
+      "value": "Standard_D2_v3"
     },
     "numberOfInstances": {
       "value": 2

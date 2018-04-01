@@ -5,17 +5,17 @@
     "prefix": {
       "value": "my"
     },
-    "subnet": {
-      "value": "mgmt-tier"
-    },
     "vmName": {
-      "value": "jump"
+      "value": "db"
     },
     "vmSize": {
-      "value": "Standard_A1_v2"
+      "value": "Standard_DS3_v2"
     },
-    "useImage": {
-      "value": "No"
+    "numberOfInstances": {
+      "value": 2
+    },
+    "subnet": {
+      "value": "data-tier"
     },
     "adminUserName": {
       "value": "azureuser"
@@ -23,8 +23,5 @@
     "adminPassword": {
       "value": "PasswordAzure@123!"
     },
-    "remoteAccessACL": {
-      "value": "Internet"
-    }
   }
 }

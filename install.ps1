@@ -25,7 +25,8 @@ Param(
   [boolean] $Base = $false,
   [boolean] $DevOps = $false,
   [boolean] $Management = $false,
-  [boolean] $Servers = $false
+  [boolean] $Servers = $false,
+  [boolean] $Balance = $false
 )
 . ./.env.ps1
 Get-ChildItem Env:AZURE*
@@ -61,11 +62,30 @@ if ($DevOps -eq $true) {
 
 if ($Servers -eq $true) {
   Write-Host "Install Server Resources here we go...." -foregroundcolor "cyan"
-  & ./iac-privateVMas/install.ps1 -Subnet "web-tier" -VMName "web"
-  # & ./iac-privateVMas/install.ps1 -Subnet "app-tier" -VMName "app"
-  # & ./iac-privateVMas/install.ps1 -Subnet "data-tier" -VMName "db"
+  #& ./iac-privateVMas/install.ps1 -Subnet "web-tier" -VMName "web"
+  & ./iac-privateVMas/install.ps1 -Subnet "app-tier" -VMName "app"
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
   Write-Host "Server Components have been installed!!!!!" -foregroundcolor "red"
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+}
+
+if ($Data -eq $true) {
+  Write-Host "Install DB Resources here we go...." -foregroundcolor "cyan"
+  & ./iac-privateDBas/install.ps1
+
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+  Write-Host "DB Components have been installed!!!!!" -foregroundcolor "red"
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+}
+
+if ($Balance -eq $true) {
+  Write-Host "Install Load Balancing Resources here we go...." -foregroundcolor "cyan"
+  & ./iac-internalLB/install.ps1 -Subnet "app-tier" -IPAddress "10.0.1.126"
+  & ./iac-internalLB/install.ps1 -Subnet "data-tier" -IPAddress "10.0.1.190"
+
+
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+  Write-Host "DB Components have been installed!!!!!" -foregroundcolor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }

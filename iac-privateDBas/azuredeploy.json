@@ -13,10 +13,10 @@
     "numberOfInstances": {
       "type": "int",
       "metadata": {
-        "description": "Number of VMs to deploy, min 2 max 5"
+        "description": "Number of VMs to deploy, min 2 max 3"
       },
       "minValue": 2,
-      "maxValue": 5
+      "maxValue": 3
     },
     "vmName": {
       "type": "string",
@@ -60,16 +60,6 @@
         "description": "Subnet ID to associate VM to."
       }
     },
-    "useImage": {
-      "type": "string",
-      "allowedValues": [
-        "Yes",
-        "No"
-      ],
-      "metadata": {
-        "description": "Select whether an image should be used to create resource."
-      }
-    },
     "adminUserName": {
       "type": "string",
       "metadata": {
@@ -84,26 +74,19 @@
       },
       "minLength": 12
     },
-    "WindowsOSVersion": {
+    "DatabaseVersion": {
       "type": "string",
       "metadata": {
-        "description": "The Windows version for the VM."
+        "description": "The SQL DB version for the VM."
       },
-      "defaultValue": "2016-Datacenter",
+      "defaultValue": "Standard",
       "allowedValues": [
-        "2008-R2-SP1",
-        "2012-Datacenter",
-        "2012-R2-Datacenter",
-        "2016-Nano-Server",
-        "2016-Datacenter-with-Containers",
-        "2016-Datacenter"
+        "Enterprise",
+        "Express",
+        "SQLDEV",
+        "Standard",
+        "Web"
       ]
-    },
-    "managedImageId": {
-      "type": "string",
-      "metadata": {
-        "description": "The Windows Image Name"
-      }
     },
     "diagnosticsStorageName": {
       "type": "string",
@@ -199,22 +182,44 @@
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
         },
-        "storageProfile": {
-          "imageReference": {
-            "id": "[if(equals(parameters('useImage'), 'Yes'), parameters('managedImageId'), json('null'))]",
-            "publisher": "[if(equals(parameters('useImage'), 'Yes'), json('null'), 'MicrosoftWindowsServer')]",
-            "offer": "[if(equals(parameters('useImage'), 'Yes'), json('null'), 'WindowsServer')]",
-            "sku": "[if(equals(parameters('useImage'), 'Yes'), json('null'), parameters('WindowsOSVersion'))]",
-            "version": "[if(equals(parameters('useImage'), 'Yes'), json('null'), 'latest')]"
-          },
-          "osDisk": {
-            "createOption": "FromImage"
-          }
-        },
         "osProfile": {
           "computerName": "[concat(variables('vmName'), copyIndex())]",
           "adminUsername": "[parameters('adminUserName')]",
           "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftSQLServer",
+            "offer": "SQL2016SP1-WS2016",
+            "sku": "[parameters('DatabaseVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "[parameters('vmStorageType')]"
+            }
+          },
+          "dataDisks": [
+            {
+              "name": "[concat(parameters('vmName'), copyIndex(), '-d1')]",
+              "diskSizeGB": 250,
+              "lun": 0,
+              "createOption": "Empty",
+              "managedDisk": {
+                "storageAccountType": "[parameters('vmStorageType')]"
+              }
+            },
+            {
+              "name": "[concat(parameters('vmName'), copyIndex(), '-d2')]",
+              "diskSizeGB": 250,
+              "lun": 1,
+              "createOption": "Empty",
+              "managedDisk": {
+                "storageAccountType": "[parameters('vmStorageType')]"
+              }
+            }
+          ]
         },
         "networkProfile": {
           "networkInterfaces": [
