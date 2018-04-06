@@ -25,67 +25,67 @@ Param(
   [boolean] $Base = $false,
   [boolean] $DevOps = $false,
   [boolean] $Management = $false,
-  [boolean] $Servers = $false,
-  [boolean] $Balance = $false
+  [boolean] $Web = $false,
+  [boolean] $App = $false,
+  [boolean] $Data = $false
 )
 . ./.env.ps1
 Get-ChildItem Env:AZURE*
 
 if ($Base -eq $true) {
-  Write-Host "Install Base Resources here we go...." -foregroundcolor "cyan"
+  Write-Host "Install Base Resources here we go...." -ForegroundColor "cyan"
   & ./iac-network/install.ps1
   & ./iac-storage/install.ps1
   & ./iac-keyvault/install.ps1
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "Base Components have been installed!!!!!" -foregroundcolor "red"
+  Write-Host "Base Components have been installed!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
 if ($Management -eq $true) {
-  Write-Host "Install Management Resources here we go...." -foregroundcolor "cyan"
+  Write-Host "Install Management Resources here we go...." -ForegroundColor "cyan"
   & ./iac-publicVM/install.ps1
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "Management Components have been installed!!!!!" -foregroundcolor "red"
+  Write-Host "Management Components have been installed!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
 if ($DevOps -eq $true) {
-  Write-Host "Install DevOps Resources here we go...." -foregroundcolor "cyan"
+  Write-Host "Install DevOps Resources here we go...." -ForegroundColor "cyan"
   & ./iac-automation/install.ps1
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "DevOps Components have been installed!!!!!" -foregroundcolor "red"
+  Write-Host "DevOps Components have been installed!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
-if ($Servers -eq $true) {
-  Write-Host "Install Server Resources here we go...." -foregroundcolor "cyan"
-  #& ./iac-privateVMas/install.ps1 -Subnet "web-tier" -VMName "web"
-  & ./iac-privateVMas/install.ps1 -Subnet "app-tier" -VMName "app"
+if ($Web -eq $true) {
+  Write-Host "Install Web Server Resources here we go...." -ForegroundColor "cyan"
+  & ./iac-privateVMas/install.ps1 -Subnet "web-tier" -VMName "web" -VMSize "Standard_DS1_v2"
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "Server Components have been installed!!!!!" -foregroundcolor "red"
+  Write-Host "Web Server Components have been installed!!!!!" -ForegroundColor "red"
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+}
+
+if ($App -eq $true) {
+  Write-Host "Install App Server Resources here we go...." -ForegroundColor "cyan"
+  & ./iac-privateVMas/install.ps1 -Subnet "app-tier" -VMName "app" -VMSize "Standard_DS2_v2"
+  & ./iac-internalLB/install.ps1 -Subnet "app-tier" -IPAddress "10.0.1.126"
+
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+  Write-Host "App Server Components have been installed!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
 if ($Data -eq $true) {
-  Write-Host "Install DB Resources here we go...." -foregroundcolor "cyan"
-  & ./iac-privateDBas/install.ps1
-
-  Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "DB Components have been installed!!!!!" -foregroundcolor "red"
-  Write-Host "---------------------------------------------" -ForegroundColor "blue"
-}
-
-if ($Balance -eq $true) {
-  Write-Host "Install Load Balancing Resources here we go...." -foregroundcolor "cyan"
-  & ./iac-internalLB/install.ps1 -Subnet "app-tier" -IPAddress "10.0.1.126"
+  Write-Host "Install DB Resources here we go...." -ForegroundColor "cyan"
+  & ./iac-privateDBas/install.ps1 -Subnet "data-tier" -VMName "db" -VMSize "Standard_DS3_v2"
   & ./iac-internalLB/install.ps1 -Subnet "data-tier" -IPAddress "10.0.1.190"
 
-
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "DB Components have been installed!!!!!" -foregroundcolor "red"
+  Write-Host "DB Components have been installed!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }

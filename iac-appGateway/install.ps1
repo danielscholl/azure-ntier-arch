@@ -2,7 +2,7 @@
 .SYNOPSIS
   Infrastructure as Code Component
 .DESCRIPTION
-  Install a Private Load Balancer
+  Install an Application Gateway
 .EXAMPLE
   .\install.ps1
   Version History
@@ -15,8 +15,7 @@ Param(
   [string] $Subscription = $env:AZURE_SUBSCRIPTION,
   [string] $ResourceGroupName = $env:AZURE_GROUP,
   [string] $Location = $env:AZURE_LOCATION,
-  [string] $Subnet = "app-tier",
-  [string] $IPAddress = "10.0.1.126"
+  [string] $Subnet = "GatewaySubnet"
 )
 
 if (Test-Path ..\scripts\functions.ps1) { . ..\scripts\functions.ps1 }
@@ -51,5 +50,5 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT `
   -TemplateFile $BASE_DIR\azuredeploy.json `
   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
   -prefix $ResourceGroupName `
-  -vnetGroup $ResourceGroupName -vnet $VirtualNetworkName -subnet $Subnet -staticIpAddress $IPAddress `
+  -vnetGroup $ResourceGroupName -vnet $VirtualNetworkName -subnet $Subnet `
   -ResourceGroupName $ResourceGroupName

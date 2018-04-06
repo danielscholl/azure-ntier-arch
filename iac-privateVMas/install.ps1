@@ -16,7 +16,7 @@ Param(
   [string] $ResourceGroupName = $env:AZURE_GROUP,
   [string] $Location = $env:AZURE_LOCATION,
   [string] $Subnet = "web-tier",
-  [string] $VMSize = "Standard_DS3_v2",
+  [string] $VMSize = "Standard_DS1_v2",
   [string] $VMName = "web",
   [string] $Image = $false,
   [string] $ImageGroup = $env:AZURE_DEVOPS,
