@@ -24,10 +24,11 @@
 Param(
   [boolean] $Base = $false,
   [boolean] $DevOps = $false,
-  [boolean] $Management = $false,
+  [boolean] $Manage = $false,
   [boolean] $Web = $false,
   [boolean] $App = $false,
-  [boolean] $Data = $false
+  [boolean] $Data = $false,
+  [boolean] $WebConfig = $false
 )
 . ./.env.ps1
 Get-ChildItem Env:AZURE*
@@ -43,21 +44,21 @@ if ($Base -eq $true) {
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
-if ($Management -eq $true) {
-  Write-Host "Install Management Resources here we go...." -ForegroundColor "cyan"
-  & ./iac-publicVM/install.ps1
-
-  Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "Management Components have been installed!!!!!" -ForegroundColor "red"
-  Write-Host "---------------------------------------------" -ForegroundColor "blue"
-}
-
 if ($DevOps -eq $true) {
   Write-Host "Install DevOps Resources here we go...." -ForegroundColor "cyan"
   & ./iac-automation/install.ps1
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
   Write-Host "DevOps Components have been installed!!!!!" -ForegroundColor "red"
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+}
+
+if ($Manage -eq $true) {
+  Write-Host "Install Management Resources here we go...." -ForegroundColor "cyan"
+  & ./iac-publicVM/install.ps1
+
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+  Write-Host "Management Components have been installed!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
@@ -87,5 +88,21 @@ if ($Data -eq $true) {
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
   Write-Host "DB Components have been installed!!!!!" -ForegroundColor "red"
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+}
+
+if ($WebConfig -eq $true) {
+  Write-Host "Configure Web Resources here we go...." -ForegroundColor "cyan"
+  Get-AzureRMVM -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -like '*web*' } | `
+  ForEach-Object {
+    $vmName = $_.Name
+    $ ./ext-dscNode/install.ps1 -VMName $vmName -NodeConfiguration 'Frontend.Web'
+  }
+
+  # ($filter, $group, $dscAccount, $dscGroup, $dscConfig)
+  Add-NodesViaFilter '*web*' 'ntier' 'ntier-automate' 'ntier' 'Frontend.Web'
+
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+  Write-Host "Web Servers have been configured!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }

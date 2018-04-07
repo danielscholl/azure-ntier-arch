@@ -167,7 +167,7 @@ function GetSASToken ($ResourceGroupName, $StorageAccountName, $ContainerName) {
   $StorageContext = New-AzureStorageContext -StorageAccountName $StorageAccount.StorageAccountName `
     -StorageAccountKey $Keys[0].Value
 
-  return New-AzureStorageContainerSASToken -Name $ContainerName -Context $StorageContext -Permission r -ExpiryTime (Get-Date).AddMinutes(20)
+  return New-AzureStorageContainerSASToken -Name $ContainerName -Context $StorageContext -Permission rd -ExpiryTime (Get-Date).AddMinutes(20)
 }
 function Import-DscConfiguration ($script, $config, $ResourceGroup, $Force) {
 

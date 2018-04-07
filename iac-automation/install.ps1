@@ -40,6 +40,22 @@ Write-Color -Text "Retrieving Storage Account Information..." -Color Green
 $StorageAccountName = GetStorageAccount $ResourceGroupName
 
 ##############################
+## Sync script artifacts       ##
+##############################
+$DIRECTORY = "scripts"
+Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
+Write-Color -Text "Uploading ", "$DIRECTORY ", "artifacts..." -Color Green, Red, Green
+Write-Color -Text "---------------------------------------------------- "-Color Yellow
+
+Write-Color -Text "Creating Container for $DIRECTORY..." -Color Yellow
+Create-Container $ResourceGroupName $DIRECTORY blob
+
+$files = @(Get-ChildItem $BASE_DIR\$DIRECTORY)
+foreach ($file in $files) {
+  Upload-File $ResourceGroupName $DIRECTORY $BASE_DIR\$DIRECTORY\$file
+}
+
+##############################
 ## Sync dsc artifacts       ##
 ##############################
 $DIRECTORY = "dsc"
@@ -56,7 +72,7 @@ foreach ($file in $files) {
 }
 
 ##############################
-## Sync dsc artifacts       ##
+## Sync runbooks artifacts       ##
 ##############################
 $DIRECTORY = "runbooks"
 Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
