@@ -122,6 +122,9 @@ The architecture depends upon the following items:
 | ----------- | ------------ | --------------------------- |
 | Managed SSD | Standard_LRS |                             |
 
+_Architecture Diagram_
+![[0]][0]
+
 ## Installation Procedure
 
 -----------------------------------------------------------------------
@@ -218,3 +221,5 @@ Start-AzureAutomationRunbook -AutomationAccountName "ntier-automate" -Name "stop
 
 Remove-AzureRmResourceGroup -Name "ntier"
 ```
+
+[0]: ./diagrams/Architecture.png "Architecture Diagram"
