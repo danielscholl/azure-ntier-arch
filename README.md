@@ -58,8 +58,6 @@ Import-Module AzureRM
 
 ## Azure Network Architecture
 
------------------------------------------------------------------------
-
 The Network scheme is an ARM Network scheme with multiple subnets.
 
 __Network Resource Requirements:__
@@ -73,8 +71,6 @@ __Network Resource Requirements:__
 - Subnet 5 GatewaySubnet 10.1.0.224/28
 
 ## Azure IaaS Architecture
-
------------------------------------------------------------------------
 
 The architecture depends upon the following items:
 
@@ -122,12 +118,10 @@ The architecture depends upon the following items:
 | ----------- | ------------ | --------------------------- |
 | Managed SSD | Standard_LRS |                             |
 
-_Architecture Diagram_
 ![[0]][0]
+_Architecture Diagram_
 
 ## Installation Procedure
-
------------------------------------------------------------------------
 
 >NOTE: ALWAYS USE A NEW POWERSHELL SESSION!!!
 
@@ -146,8 +140,6 @@ Default Environment Settings
 | _AZURE_PASSWORD_     | localPassword                        | Default Local Admin Password             |
 
 ### Create Resources
-
------------------------------------------------------------------------
 
 Resources are broken up into sections only for the purpose of not having an excessively long running task.
 
@@ -201,8 +193,6 @@ Resources are broken up into sections only for the purpose of not having an exce
 ```
 
 ## Manage the Solution
-
------------------------------------------------------------------------
 
 To gracefully suspend the solution from Azure a runbook can be applied or a schedule to run it setup.
 
