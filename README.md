@@ -1,4 +1,4 @@
-# Azure Ntier Architecture
+# Azure NTier Architecture
 
 This is a Powershell Infrastruture as Code (iac) automation solution for a Standard IaaS Ntier Architecture.
 
@@ -15,7 +15,7 @@ __Requirements:__
   5      1      16299  248
 ```
 
-1. [Azure PowerShell Modules](https://www.powershellgallery.com/packages/Azure/5.1.1)
+2. [Azure PowerShell Modules](https://www.powershellgallery.com/packages/Azure/5.1.1)
 
 ```powershell
   Get-Module Azure -list | Select-Object Name,Version
@@ -26,7 +26,7 @@ __Requirements:__
   Azure 5.1.1
 ```
 
-1. [AzureRM Powershell Modules](https://www.powershellgallery.com/packages/AzureRM/5.1.1)
+3. [AzureRM Powershell Modules](https://www.powershellgallery.com/packages/AzureRM/5.1.1)
 
 ```powershell
   Get-Module AzureRM.* -list | Select-Object Name,Version
@@ -66,10 +66,10 @@ __Network Resource Requirements:__
 
 - A Unique /24 Address Space  ie: 10.0.1.0/24
 - Azure Region Location (EastUS)
-- Subnet 1 Web-Tier 10.1.0.0/25
-- Subnet 2 App-Tier 10.1.0.128/26
-- Subnet 3 Data-Tier 10.1.0.192/27
-- Subnet 4 Mgmt-Tier 10.1.0.224/28
+- Subnet 1 Web-Tier 10.1.0.0/26
+- Subnet 2 App-Tier 10.1.0.64/26
+- Subnet 3 Data-Tier 10.1.0.128/26
+- Subnet 4 Mgmt-Tier 10.1.0.192/287
 - Subnet 5 GatewaySubnet 10.1.0.224/28
 
 ## Azure IaaS Architecture
