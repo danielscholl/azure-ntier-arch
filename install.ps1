@@ -12,6 +12,7 @@
   5. Web Tier Servers
   6. App Tier Servers
   7. Data Tier Servers
+  8. Apply DSC Roles to Servers
 
 .EXAMPLE
   .\install.ps1
@@ -28,9 +29,7 @@ Param(
   [boolean] $Web = $false,
   [boolean] $App = $false,
   [boolean] $Data = $false,
-  [boolean] $WebConfig = $false,
-  [boolean] $AppConfig = $false,
-  [boolean] $DataConfig = $false
+  [boolean] $DSC = $false
 )
 . ./.env.ps1
 Get-ChildItem Env:AZURE*
@@ -93,31 +92,15 @@ if ($Data -eq $true) {
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
-if ($WebConfig -eq $true) {
-  Write-Host "Configure Web Resources here we go...." -ForegroundColor "cyan"
-  & ./ext-dscNode/install.ps1 -VMName '*web*' -NodeConfiguration 'Frontend.Web'
-
-
-  Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "Web Servers have been configured!!!!!" -ForegroundColor "red"
-  Write-Host "---------------------------------------------" -ForegroundColor "blue"
-}
-
-if ($AppConfig -eq $true) {
-  Write-Host "Configure App Resources here we go...." -ForegroundColor "cyan"
-  & ./ext-dscNode/install.ps1 -VMName '*app*' -NodeConfiguration 'Frontend.Web'
-  
-  Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "App Servers have been configured!!!!!" -ForegroundColor "red"
-  Write-Host "---------------------------------------------" -ForegroundColor "blue"
-}
-
-if ($DataConfig -eq $true) {
-  Write-Host "Configure DB Resources here we go...." -ForegroundColor "cyan"
+if ($DSC -eq $true) {
   Enable-AzureRmContextAutosave
+  Write-Host "Applying DSC Configurations here we go...." -ForegroundColor "cyan"
+  & ./ext-dscNode/install.ps1 -VMName '*web*' -NodeConfiguration 'Frontend.Web'
+  & ./ext-dscNode/install.ps1 -VMName '*app*' -NodeConfiguration 'Frontend.Web'
   & ./ext-dscNode/install.ps1 -VMName '*db*' -NodeConfiguration 'Backend.Database'
-  
+
+
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "DB Servers have been configured!!!!!" -ForegroundColor "red"
+  Write-Host "Background jobs for DSC Configs have been applied!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
