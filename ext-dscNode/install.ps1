@@ -19,7 +19,9 @@ Param(
   [string] $VmName,
 
   [Parameter(Mandatory = $true)]
-  [string] $NodeConfiguration
+  [string] $NodeConfiguration,
+
+  [boolean] $Template = $false
 )
 
 if (Test-Path ..\scripts\functions.ps1) { . ..\scripts\functions.ps1 }
@@ -51,13 +53,24 @@ $Registrationkey = ConvertTo-SecureString $Automation.PrimaryKey -asplaintext -f
 ##############################
 ## Deploy Template          ##
 ##############################
-Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
-Write-Color -Text "Deploying ", "$DEPLOYMENT-$VmName ", "template..." -Color Green, Red, Green
-Write-Color -Text "---------------------------------------------------- "-Color Yellow
-New-AzureRmResourceGroupDeployment -Name "$DEPLOYMENT-$VmName" `
-  -TemplateFile $BASE_DIR\azuredeploy.json `
-  -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
-  -storageAccountName $StorageAccountName -storageContainerName scripts -sasToken $Token `
-  -registrationUrl $Automation.Endpoint -registrationKey $Registrationkey `
-  -vmName $VmName -nodeConfigurationName $NodeConfiguration `
-  -ResourceGroupName $ResourceGroupName
+if ($Template -eq $true) {
+  Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
+  Write-Color -Text "Deploying ", "$DEPLOYMENT-$VmName ", "template..." -Color Green, Red, Green
+  Write-Color -Text "---------------------------------------------------- "-Color Yellow
+  New-AzureRmResourceGroupDeployment -Name "$DEPLOYMENT-$VmName" `
+    -TemplateFile $BASE_DIR\azuredeploy.json `
+    -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
+    -storageAccountName $StorageAccountName -storageContainerName scripts -sasToken $Token `
+    -registrationUrl $Automation.Endpoint -registrationKey $Registrationkey `
+    -vmName $VmName -nodeConfigurationName $NodeConfiguration `
+    -ResourceGroupName $ResourceGroupName
+}
+else {
+  Get-AzureRMVM -ResourceGroupName $env:AZURE_GROUP | Where-Object { $_.Name -like $VmName } | `
+    ForEach-Object {
+    $Machine = $_.Name
+    Add-NodesViaFilter $Machine $ResourceGroupName $AutomationAccount $ResourceGroupName $NodeConfiguration
+  }
+  
+}
+

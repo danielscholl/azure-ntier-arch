@@ -37,9 +37,10 @@ function Get-ScriptDirectory {
 function LoginAzure() {
   Write-Color -Text "Logging in and setting subscription..." -Color Green
   if ([string]::IsNullOrEmpty($(Get-AzureRmContext).Account)) {
-    if($env:AZURE_TENANT) {
+    if ($env:AZURE_TENANT) {
       Login-AzureRmAccount -TenantId $env:AZURE_TENANT
-    } else {
+    }
+    else {
       Login-AzureRmAccount
     }
   }
@@ -280,14 +281,16 @@ function Add-NodesViaFilter ($filter, $group, $dscAccount, $dscGroup, $dscConfig
 
     if ( !$dscNode ) {
       Write-Color -Text "Registering $vmName" -Color Yellow
-      Register-AzureRmAutomationDscNode `
-        -AzureVMName $vmName `
-        -AzureVMResourceGroup $vmGroup `
-        -AzureVMLocation $vmLocation `
-        -AutomationAccountName $dscAccount `
-        -ResourceGroupName $dscGroup `
-        -NodeConfigurationName $dscConfig `
-        -RebootNodeIfNeeded $true
+      Start-Job -ScriptBlock { param($vmName, $vmGroup, $vmLocation, $dscAccount, $dscGroup, $dscConfig) `
+          Register-AzureRmAutomationDscNode `
+          -AzureRmContext $context `
+          -AzureVMName $vmName `
+          -AzureVMResourceGroup $vmGroup `
+          -AzureVMLocation $vmLocation `
+          -AutomationAccountName $dscAccount `
+          -ResourceGroupName $dscGroup `
+          -NodeConfigurationName $dscConfig `
+          -RebootNodeIfNeeded $true } -ArgumentList $vmName, $vmGroup, $vmLocation, $dscAccount, $dscGroup, $dscConfig
     }
     else {
       Write-Color -Text "Skipping $vmName, as it is already registered" -Color Yellow
@@ -348,34 +351,29 @@ function AssignADGroup($Email, $Group) {
     Write-Color -Text "AD User ", "$Email", " already assigned to ", $Group.DisplayName -Color Green, Red, Green, Red
   }
 }
-function GetDbConnectionString($DatabaseServerName, $DatabaseName, $UserName, $Password)
-{
-    return "Server=tcp:{0}.database.windows.net,1433;Database={1};User ID={2}@{0};Password={3};Trusted_Connection=False;Encrypt=True;Connection Timeout=30;" -f
-        $DatabaseServerName, $DatabaseName, $UserName, $Password
+function GetDbConnectionString($DatabaseServerName, $DatabaseName, $UserName, $Password) {
+  return "Server=tcp:{0}.database.windows.net,1433;Database={1};User ID={2}@{0};Password={3};Trusted_Connection=False;Encrypt=True;Connection Timeout=30;" -f
+  $DatabaseServerName, $DatabaseName, $UserName, $Password
 }
-function Get-PlainText()
-{
-	[CmdletBinding()]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[System.Security.SecureString]$SecureString
-	)
-	BEGIN { }
-	PROCESS
-	{
-		$bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString);
+function Get-PlainText() {
+  [CmdletBinding()]
+  param
+  (
+    [parameter(Mandatory = $true)]
+    [System.Security.SecureString]$SecureString
+  )
+  BEGIN { }
+  PROCESS {
+    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString);
 
-		try
-		{
-			return [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr);
-		}
-		finally
-		{
-			[Runtime.InteropServices.Marshal]::FreeBSTR($bstr);
-		}
-	}
-	END { }
+    try {
+      return [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr);
+    }
+    finally {
+      [Runtime.InteropServices.Marshal]::FreeBSTR($bstr);
+    }
+  }
+  END { }
 }
 function GetVmssInstances([string]$ResourceGroupName) {
   # Required Argument $1 = RESOURCE_GROUP

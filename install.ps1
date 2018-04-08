@@ -28,7 +28,9 @@ Param(
   [boolean] $Web = $false,
   [boolean] $App = $false,
   [boolean] $Data = $false,
-  [boolean] $WebConfig = $false
+  [boolean] $WebConfig = $false,
+  [boolean] $AppConfig = $false,
+  [boolean] $DataConfig = $false
 )
 . ./.env.ps1
 Get-ChildItem Env:AZURE*
@@ -93,16 +95,29 @@ if ($Data -eq $true) {
 
 if ($WebConfig -eq $true) {
   Write-Host "Configure Web Resources here we go...." -ForegroundColor "cyan"
-  Get-AzureRMVM -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -like '*web*' } | `
-  ForEach-Object {
-    $vmName = $_.Name
-    $ ./ext-dscNode/install.ps1 -VMName $vmName -NodeConfiguration 'Frontend.Web'
-  }
+  & ./ext-dscNode/install.ps1 -VMName '*web*' -NodeConfiguration 'Frontend.Web'
 
-  # ($filter, $group, $dscAccount, $dscGroup, $dscConfig)
-  Add-NodesViaFilter '*web*' 'ntier' 'ntier-automate' 'ntier' 'Frontend.Web'
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
   Write-Host "Web Servers have been configured!!!!!" -ForegroundColor "red"
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+}
+
+if ($AppConfig -eq $true) {
+  Write-Host "Configure App Resources here we go...." -ForegroundColor "cyan"
+  & ./ext-dscNode/install.ps1 -VMName '*app*' -NodeConfiguration 'Frontend.Web'
+  
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+  Write-Host "App Servers have been configured!!!!!" -ForegroundColor "red"
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+}
+
+if ($DataConfig -eq $true) {
+  Write-Host "Configure DB Resources here we go...." -ForegroundColor "cyan"
+  Enable-AzureRmContextAutosave
+  & ./ext-dscNode/install.ps1 -VMName '*db*' -NodeConfiguration 'Backend.Database'
+  
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+  Write-Host "DB Servers have been configured!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
