@@ -28,7 +28,7 @@ Param(
   [boolean] $Manage = $false,
   [boolean] $Web = $false,
   [boolean] $App = $false,
-  [boolean] $Data = $false,
+  [boolean] $Db = $false,
   [boolean] $DSC = $false
 )
 . ./.env.ps1
@@ -82,7 +82,7 @@ if ($App -eq $true) {
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
-if ($Data -eq $true) {
+if ($Db -eq $true) {
   Write-Host "Install DB Resources here we go...." -ForegroundColor "cyan"
   & ./iac-privateDBas/install.ps1 -Subnet "data-tier" -VMName "db" -VMSize "Standard_DS3_v2"
   & ./iac-internalLB/install.ps1 -Subnet "data-tier" -IPAddress "10.0.1.190"

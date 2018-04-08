@@ -152,37 +152,28 @@ Resources are broken up into sections only for the purpose of not having an exce
 
 #### Install Automation Resources
 
+Automation Accounts requires 2 additional pieces of information.
+- subscriptionPassword -- Used temporarily for creation of RunAs Accounts
+- domainPassword -- Stores Domain Credentials for ability to add to Active Directory Domain (Future Expansion)
+
+
 ```powershell
 # Install the Automation Resources
 ./install.ps1 -DevOps $true
+
+# Required Values Collected
+cmdlet New-AzureRmResourceGroupDeployment at command pipeline position 1
+Supply values for the following parameters:
+(Type !? for Help.)
+subscriptionPassword: ***********
+domainPassword: ************
 ```
 
-#### Install Mgmt-Tier Resources
+#### Install the Tier Compute Resources
 
 ```powershell
 # Install the Management Resources
-./install.ps1 -Manage $true
-```
-
-#### Install Web-Tier Resources
-
-```powershell
-# Install the Web Resources
-./install.ps1 -Web $true
-```
-
-#### Install App-Tier Resources
-
-```powershell
-# Install the App Resources
-./install.ps1 -App $true
-```
-
-#### Install DB-Tier Resources
-
-```powershell
-# Install the Database Resources
-./install.ps1 -Data $true
+./install.ps1 -Manage $true -Web $true -App $true -Db $true
 ```
 
 #### Apply the Resource Configurations
