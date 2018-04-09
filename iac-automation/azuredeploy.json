@@ -79,18 +79,6 @@
         "description": "Enter your domain admin user."
       }
     },
-    "domainAdmin": {
-      "type": "string",
-      "metadata": {
-        "description": "Enter your domain admin user."
-      }
-    },
-    "domainPassword": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Enter your domain admin password."
-      }
-    },
     "jobGuid1": {
       "type": "string",
       "metadata": {
@@ -282,13 +270,16 @@
   "resources": [
     {
       "comments": "## Log Analytics Workspace ##",
-      "apiVersion": "2015-11-01-preview",
+      "apiVersion": "2017-03-15-preview",
       "type": "Microsoft.OperationalInsights/workspaces",
       "name": "[variables('omsWorkspaceName')]",
       "location": "[parameters('omsWorkspaceRegion')]",
       "properties": {
         "sku": {
-          "name": "free"
+          "name": "pergb2018"
+        },
+        "features": {
+          "searchVersion": "1"
         }
       },
       "resources": [
@@ -561,20 +552,6 @@
           "properties": {
             "description": "Active Directory Domain Name",
             "value": "[concat('\"', parameters('domainName'), '\"')]"
-          }
-        },
-        {
-          "name": "adDomainCredentials",
-          "type": "credentials",
-          "apiVersion": "2015-10-31",
-          "dependsOn": [
-            "[concat('Microsoft.Automation/automationAccounts/', variables('automationAccountName'))]"
-          ],
-          "tags": {},
-          "properties": {
-            "description": "Active Directory Domain Admin",
-            "userName": "[concat(parameters('prefix'), '\\', parameters('domainAdmin'))]",
-            "password": "[parameters('domainPassword')]"
           }
         },
         {

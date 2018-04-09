@@ -154,8 +154,6 @@ Resources are broken up into sections only for the purpose of not having an exce
 
 Automation Accounts requires 2 additional pieces of information.
 - subscriptionPassword -- Used temporarily for creation of RunAs Accounts
-- domainPassword -- Stores Domain Credentials for ability to add to Active Directory Domain (Future Expansion)
-
 
 ```powershell
 # Install the Automation Resources
@@ -166,7 +164,6 @@ cmdlet New-AzureRmResourceGroupDeployment at command pipeline position 1
 Supply values for the following parameters:
 (Type !? for Help.)
 subscriptionPassword: ***********
-domainPassword: ************
 ```
 
 #### Install the Tier Compute Resources

@@ -106,7 +106,7 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT `
   -TemplateFile $BASE_DIR\azuredeploy.json `
   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
   -prefix $ResourceGroupName -storageAccountName $StorageAccountName `
-  -subscriptionAdmin $(Get-AzureRmContext).Account.Id -domainAdmin "domain_admin"  `
+  -subscriptionAdmin $(Get-AzureRmContext).Account.Id `
   -runbookSasToken $RunBookToken -dscSasToken $DscToken `
   -jobGuid1 (New-Guid).Guid -jobGuid2 (New-Guid).Guid -jobGuid3 (New-Guid).Guid `
   -ResourceGroupName $ResourceGroupName
