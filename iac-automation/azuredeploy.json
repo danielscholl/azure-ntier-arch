@@ -276,7 +276,7 @@
       "location": "[parameters('omsWorkspaceRegion')]",
       "properties": {
         "sku": {
-          "name": "pergb2018"
+          "name": "free"
         },
         "features": {
           "searchVersion": "1"
