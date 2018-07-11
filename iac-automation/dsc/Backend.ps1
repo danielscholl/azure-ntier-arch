@@ -47,7 +47,6 @@ Configuration Backend {
 		        [system.io.directory]::CreateDirectory($logs)
 		        [system.io.directory]::CreateDirectory($data)
 		        [system.io.directory]::CreateDirectory($backups)
-		        [system.io.directory]::CreateDirectory("C:\SQDATA")
 
           # Setup the data, backup and log directories as well as mixed mode authentication
           Import-Module "sqlps" -DisableNameChecking
@@ -66,18 +65,15 @@ Configuration Backend {
           Invoke-Sqlcmd -ServerInstance Localhost -Database "master" -Query "ALTER LOGIN sa WITH PASSWORD = 'password1!'"
 
           # Get the Simple App database backup
-          $dbsource = "https://cloudcodeit.blob.core.windows.net/public/SimpleApp.bak"
-          $dbdestination = "C:\SQDATA\SimpleApp.bak"
-          Invoke-WebRequest $dbsource -OutFile $dbdestination
+          $dbsource = "https://cloudcodeit.blob.core.windows.net/public/SimpleAppDB.bak"
+          Invoke-WebRequest $dbsource -OutFile "$backups\SimpleAppDB.bak"
 
-          $mdf = New-Object Microsoft.SqlServer.Management.Smo.RelocateFile("SimpleApp_Data", "F:\Data\SimpleApp.mdf")
-          $ldf = New-Object Microsoft.SqlServer.Management.Smo.RelocateFile("SimpleApp_Log", "F:\Logs\SimpleApp.ldf")
+          Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+          Install-Module dbatools -Force
 
-          # Restore the database from the backup
-          Restore-SqlDatabase -ServerInstance Localhost -Database AdventureWorks `
-            -BackupFile $dbdestination -RelocateFile @($mdf, $ldf)
+          Get-ChildItem -Path $backups | Restore-DbaDatabase -SqlInstance LocalHost
+
           New-NetFirewallRule -DisplayName "SQL Server" -Direction Inbound -Protocol TCP -LocalPort 1433 -Action allow
-        
         }
       }
       GetScript  = {@{Result = $true}}
