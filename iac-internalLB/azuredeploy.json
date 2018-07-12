@@ -80,14 +80,32 @@
                 "id": "[concat(variables('LBId'), '/backendAddressPools/lbBackEnd')]"
               },
               "probe": {
-                "id": "[concat(variables('LBId'), '/probes/lbProbe')]"
+                "id": "[concat(variables('LBId'), '/probes/httpProbe')]"
               },
               "protocol": "Tcp",
               "frontendPort": 80,
               "backendPort": 80,
               "idleTimeoutInMinutes": 15
             },
-            "name": "lbrule"
+            "name": "httprule"
+          },
+          {
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(variables('LBId'), '/backendAddressPools/lbBackEnd')]"
+              },
+              "probe": {
+                "id": "[concat(variables('LBId'), '/probes/dbProbe')]"
+              },
+              "protocol": "Tcp",
+              "frontendPort": 1433,
+              "backendPort": 1433,
+              "idleTimeoutInMinutes": 15
+            },
+            "name": "dbrule"
           }
         ],
         "probes": [
@@ -98,7 +116,16 @@
               "intervalInSeconds": 15,
               "numberOfProbes": 2
             },
-            "name": "lbProbe"
+            "name": "httpProbe"
+          },
+          {
+            "properties": {
+              "protocol": "Tcp",
+              "port": 1433,
+              "intervalInSeconds": 15,
+              "numberOfProbes": 2
+            },
+            "name": "dbProbe"
           }
         ]
       }

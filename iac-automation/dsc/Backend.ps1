@@ -39,14 +39,15 @@ Configuration Backend {
             New-Partition -DriveLetter "F" -UseMaximumSize |
             Format-Volume -FileSystem NTFS -NewFileSystemLabel "DataDisk" -Confirm:$false
 
-		        Start-Sleep -Seconds 60
+		        Start-Sleep -Seconds 100
 
 		        $logs = "F:\Logs"
 		        $data = "F:\Data"
 		        $backups = "F:\Backup"
 		        [system.io.directory]::CreateDirectory($logs)
 		        [system.io.directory]::CreateDirectory($data)
-		        [system.io.directory]::CreateDirectory($backups)
+          [system.io.directory]::CreateDirectory($backups)
+          [system.io.directory]::CreateDirectory("C:\SQDATA")
 
           # Setup the data, backup and log directories as well as mixed mode authentication
           Import-Module "sqlps" -DisableNameChecking
@@ -66,12 +67,12 @@ Configuration Backend {
 
           # Get the Simple App database backup
           $dbsource = "https://cloudcodeit.blob.core.windows.net/public/SimpleAppDB.bak"
-          Invoke-WebRequest $dbsource -OutFile "$backups\SimpleAppDB.bak"
+          Invoke-WebRequest $dbsource -OutFile "C:\SQDATA\SimpleAppDB.bak"
 
           Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
           Install-Module dbatools -Force
 
-          Get-ChildItem -Path $backups | Restore-DbaDatabase -SqlInstance LocalHost
+          Get-ChildItem -Path "C:\SQDATA" | Restore-DbaDatabase -SqlInstance LocalHost
 
           New-NetFirewallRule -DisplayName "SQL Server" -Direction Inbound -Protocol TCP -LocalPort 1433 -Action allow
         }

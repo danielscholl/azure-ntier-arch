@@ -185,33 +185,41 @@
         "name": "AzureRm.Websites",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.websites.4.1.0.nupkg"
       },
+      "xActiveDirectory": {
+        "name": "xActiveDirectory",
+        "url": "https://www.powershellgallery.com/api/v2/package/xActiveDirectory/2.16.0.0"
+      },
       "xComputerManagement": {
         "name": "xComputerManagement",
         "url": "https://www.powershellgallery.com/api/v2/package/xComputerManagement/2.1.0"
-      },
-      "xNetworking": {
-        "name": "xNetworking",
-        "url": "https://www.powershellgallery.com/api/v2/package/xNetworking/5.1.0"
-      },
-      "xStorage": {
-        "name": "xStorage",
-        "url": "https://www.powershellgallery.com/api/v2/package/xStorage/3.2.0"
       },
       "xDSCDomainjoin": {
         "name": "xDSCDomainjoin",
         "url": "https://www.powershellgallery.com/api/v2/package/xDSCDomainjoin/1.1.0"
       },
-      "xActiveDirectory": {
-        "name": "xActiveDirectory",
-        "url": "https://www.powershellgallery.com/api/v2/package/xActiveDirectory/2.16.0.0"
+      "xNetworking": {
+        "name": "xNetworking",
+        "url": "https://www.powershellgallery.com/api/v2/package/xNetworking/5.1.0"
+      },
+      "xPSDesiredStateConfiguration": {
+        "name": "xPSDesiredStateConfiguration",
+        "url": "https://www.powershellgallery.com/api/v2/package/xPSDesiredStateConfiguration/8.3.0.0"
+      },
+      "xSqlPs": {
+        "name": "xSqlPs",
+        "url": "https://www.powershellgallery.com/api/v2/package/xSqlPs/1.4.0"
       },
       "xSQLServer": {
         "name": "xSQLServer",
         "url": "https://www.powershellgallery.com/api/v2/package/xSQLServer/7.1.0.0"
       },
-      "xSqlPs": {
-        "name": "xSqlPs",
-        "url": "https://www.powershellgallery.com/api/v2/package/xSqlPs/1.4.0"
+      "xStorage": {
+        "name": "xStorage",
+        "url": "https://www.powershellgallery.com/api/v2/package/xStorage/3.2.0"
+      },
+      "xWebAdministration": {
+        "name": "xWebAdministration",
+        "url": "https://www.powershellgallery.com/api/v2/package/xWebAdministration/2.0.0.0"
       }
     },
     "runbooks": {

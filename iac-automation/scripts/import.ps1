@@ -14,8 +14,7 @@ Param(
   [Parameter(Mandatory = $true)]
   [string] $dscRole,
 
-  [Parameter(Mandatory = $true)]
-  [string] $ResourceGroup,
+  [string] $ResourceGroup = $env:AZURE_GROUP,
 
   [string] $DscPath = "../dsc/",
   [string] $dscDataConfig = $dscRole + "-config.ps1",
