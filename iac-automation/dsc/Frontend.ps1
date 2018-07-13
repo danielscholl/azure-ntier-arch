@@ -1,6 +1,7 @@
 Configuration Frontend {
   Import-DscResource -ModuleName xPSDesiredStateConfiguration
   Import-DscResource -ModuleName xWebAdministration
+  Import-DscResource -ModuleName xNetworking
 
   $features = @(
     @{Name = "Web-Server"; Ensure = "Present"},
@@ -30,6 +31,19 @@ Configuration Frontend {
     {
       Name = "Web-Mgmt-Console"
       Ensure = "Present"
+    }
+
+    xFirewall HTTPRulesInboundTCP
+    {
+      Name = "Custom Web Inbound Rules TCP"
+      Ensure = "Present"
+      Direction = "Inbound"
+      Description = "HTTP Inbound Rules for Additional Web Site"
+      Profile = "Public"
+      Protocol = "TCP"
+      LocalPort = ("8080")
+      Action = "Allow"
+      Enabled = "True"
     }
 
     xRemoteFile Payload {
@@ -73,20 +87,13 @@ Configuration Frontend {
       DependsOn = "[xRemoteFile]InstallWebDeploy"
     }
 
-    xWebsite DefaultSite {
-      Ensure          = "Present"
-      Name            = "Default Web Site"
-      State           = "Stopped"
-      PhysicalPath    = "C:\inetpub\wwwroot"
-      DependsOn       = "[WindowsFeature]WebServerRole"
-    }
-
     xWebAppPool WebAppAppPool
     {
       Ensure          = "Present"
       Name            = "simpleapp"
       State           = "Started"
       managedRuntimeVersion = ""
+      DependsOn = "[Package]InstallWebDeploy"
     }
 
     xWebsite WebAppWebSite
@@ -98,11 +105,25 @@ Configuration Frontend {
       ApplicationPool = "simpleapp"
       BindingInfo = MSFT_xWebBindingInformation
       {
-        Port = '80'
+        Port = '8080'
         IPAddress = '*'
         Protocol = 'HTTP'
       }
       DependsOn = "[xWebAppPool]WebAppAppPool"
+    }
+
+    Script Reboot
+    {
+        TestScript = {
+            return (Test-Path HKLM:\SOFTWARE\MyMainKey\RebootKey)
+        }
+        SetScript = {
+            New-Item -Path HKLM:\SOFTWARE\MyMainKey\RebootKey -Force
+             $global:DSCMachineStatus = 1
+
+        }
+        GetScript = { return @{result = 'result'}}
+        DependsOn = '[xWebsite]WebAppWebSite'
     }
   }
 
@@ -116,6 +137,19 @@ Configuration Frontend {
     WindowsFeature WebManagementConsole {
       Name   = "Web-Mgmt-Console"
       Ensure = "Present"
+    }
+
+    xFirewall HTTPRulesInboundTCP
+    {
+      Name        = "Custom Web Inbound Rules TCP"
+      Ensure      = "Present"
+      Direction   = "Inbound"
+      Description = "HTTP Inbound Rules for Additional Web Site"
+      Profile     = "Public"
+      Protocol    = "TCP"
+      LocalPort   = ("8080")
+      Action      = "Allow"
+      Enabled     = "True"
     }
 
     xRemoteFile Payload {
@@ -158,20 +192,13 @@ Configuration Frontend {
       DependsOn = "[xRemoteFile]InstallWebDeploy"
     }
 
-    xWebsite DefaultSite {
-      Ensure       = "Present"
-      Name         = "Default Web Site"
-      State        = "Stopped"
-      PhysicalPath = "C:\inetpub\wwwroot"
-      DependsOn    = "[WindowsFeature]WebServerRole"
-    }
-
     xWebAppPool WebAppAppPool
     {
       Ensure                = "Present"
       Name                  = "simpleapp"
       State                 = "Started"
       managedRuntimeVersion = ""
+      DependsOn             = "[Package]InstallWebDeploy"
     }
 
     xWebsite WebAppWebSite
@@ -183,11 +210,24 @@ Configuration Frontend {
       ApplicationPool = "simpleapp"
       BindingInfo     = MSFT_xWebBindingInformation
       {
-        Port      = '80'
+        Port      = '8080'
         IPAddress = '*'
         Protocol  = 'HTTP'
       }
       DependsOn       = "[xWebAppPool]WebAppAppPool"
+    }
+
+    Script Reboot {
+      TestScript = {
+        return (Test-Path HKLM:\SOFTWARE\MyMainKey\RebootKey)
+      }
+      SetScript  = {
+        New-Item -Path HKLM:\SOFTWARE\MyMainKey\RebootKey -Force
+        $global:DSCMachineStatus = 1
+
+      }
+      GetScript  = { return @{result = 'result'}}
+      DependsOn  = '[xWebsite]WebAppWebSite'
     }
   }
 }

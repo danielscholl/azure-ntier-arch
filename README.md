@@ -175,7 +175,16 @@ subscriptionPassword: ***********
 
 #### Apply the Resource Configurations
 
+> NOTE: The default DSC Scripts do not apply a sample app. azure-ntier-code
+
+To deploy an Application remove the DSC Configurations in Automation then upload the alternate DSC Configurations.
+
+
 ```powershell
+# Optional: Only do this if you removed the DSC Configurations
+cd iac-automation/scripts
+./import.ps1 -ResourceGroup ntier -dscRole Frontend
+
 # Apply the DSC Configs
 ./install.ps1 -DSC $true
 ```

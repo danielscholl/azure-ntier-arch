@@ -1,7 +1,8 @@
 $ConfigData = @{
   AllNodes = @(
     @{
-      NodeName = "Web"
+      NodeName           = "Web"
+      RebootNodeIfNeeded = $true
     },
     @{
       NodeName           = "App"

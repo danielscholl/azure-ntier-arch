@@ -74,5 +74,6 @@ function Import-DscConfiguration ($script, $config, $ResourceGroup) {
 
 }
 
+if ( !$ResourceGroup) { throw "ResourceGroup Required" }
 
 Import-DscConfiguration $dscRole $dscDataConfig $ResourceGroup

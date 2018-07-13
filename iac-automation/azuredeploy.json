@@ -199,7 +199,7 @@
       },
       "xNetworking": {
         "name": "xNetworking",
-        "url": "https://www.powershellgallery.com/api/v2/package/xNetworking/5.1.0"
+        "url": "https://www.powershellgallery.com/api/v2/package/xNetworking/5.7.0.0"
       },
       "xPSDesiredStateConfiguration": {
         "name": "xPSDesiredStateConfiguration",

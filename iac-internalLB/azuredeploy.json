@@ -80,11 +80,11 @@
                 "id": "[concat(variables('LBId'), '/backendAddressPools/lbBackEnd')]"
               },
               "probe": {
-                "id": "[concat(variables('LBId'), '/probes/httpProbe')]"
+                "id": "[concat(variables('LBId'), '/probes/webProbe')]"
               },
               "protocol": "Tcp",
               "frontendPort": 80,
-              "backendPort": 80,
+              "backendPort": 8080,
               "idleTimeoutInMinutes": 15
             },
             "name": "httprule"
@@ -112,11 +112,11 @@
           {
             "properties": {
               "protocol": "Tcp",
-              "port": 80,
+              "port": 8080,
               "intervalInSeconds": 15,
               "numberOfProbes": 2
             },
-            "name": "httpProbe"
+            "name": "webProbe"
           },
           {
             "properties": {
