@@ -66,6 +66,7 @@ if ($Manage -eq $true) {
 if ($Web -eq $true) {
   Write-Host "Install Web Server Resources here we go...." -ForegroundColor "cyan"
   & ./iac-privateVMas/install.ps1 -Subnet "web-tier" -VMName "web" -VMSize "Standard_DS1_v2"
+  & ./iac-appGateway/install.ps1
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
   Write-Host "Web Server Components have been installed!!!!!" -ForegroundColor "red"
@@ -96,7 +97,7 @@ if ($DSC -eq $true) {
   Enable-AzureRmContextAutosave
   Write-Host "Applying DSC Configurations here we go...." -ForegroundColor "cyan"
   & ./ext-dscNode/install.ps1 -VMName '*web*' -NodeConfiguration 'Frontend.Web'
-  & ./ext-dscNode/install.ps1 -VMName '*app*' -NodeConfiguration 'Frontend.Web'
+  & ./ext-dscNode/install.ps1 -VMName '*app*' -NodeConfiguration 'Frontend.App'
   & ./ext-dscNode/install.ps1 -VMName '*db*' -NodeConfiguration 'Backend.Database'
 
 

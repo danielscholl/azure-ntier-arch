@@ -44,7 +44,7 @@ function LoginAzure() {
       Login-AzureRmAccount
     }
   }
-  Set-AzureRmContext -SubscriptionId ${Subscription} | Out-null
+  Set-AzureRmContext -SubscriptionId $env:AZURE_SUBSCRIPTION | Out-null
 
 }
 function CreateResourceGroup([string]$ResourceGroupName, [string]$Location) {

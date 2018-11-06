@@ -125,6 +125,14 @@
         {
           "name": "[concat('AzureActivity', '(', variables('omsWorkspaceName'), ')')]",
           "marketplaceName": "AzureActivity"
+        },
+        {
+          "name": "[concat('AgentHealthAssessment', '(', variables('omsWorkspaceName'), ')')]",
+          "marketplaceName": "AgentHealthAssessment"
+        },
+        {
+          "name": "[concat('NetworkMonitoring', '(', variables('omsWorkspaceName'), ')')]",
+          "marketplaceName": "NetworkMonitoring"
         }
       ]
     },
@@ -203,7 +211,7 @@
       },
       "xPSDesiredStateConfiguration": {
         "name": "xPSDesiredStateConfiguration",
-        "url": "https://www.powershellgallery.com/api/v2/package/xPSDesiredStateConfiguration/8.3.0.0"
+        "url": "https://www.powershellgallery.com/api/v2/package/xPSDesiredStateConfiguration/8.4.0"
       },
       "xSqlPs": {
         "name": "xSqlPs",
@@ -219,7 +227,7 @@
       },
       "xWebAdministration": {
         "name": "xWebAdministration",
-        "url": "https://www.powershellgallery.com/api/v2/package/xWebAdministration/2.0.0.0"
+        "url": "https://www.powershellgallery.com/api/v2/package/xWebAdministration/2.3.0"
       }
     },
     "runbooks": {
